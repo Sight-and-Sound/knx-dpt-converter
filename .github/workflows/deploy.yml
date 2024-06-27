@@ -20,11 +20,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: Build project
-        run: npm run build
+      - run: npm ci
+      - run: npm build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
